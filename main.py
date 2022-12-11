@@ -420,5 +420,137 @@ def day8_part2():
     print(result)
 
 
+def day9_part1():
+    lines = [line[:-1] for line in open("day9.txt").readlines()]
+
+    result = set()
+    head = [0, 0]
+    tail = [0, 0]
+    result.add(tuple(tail))
+
+    for line in lines:
+        line = line.split(" ")
+        dir = (0, 0)
+        if line[0] == "L":
+            dir = (-1, 0)
+        elif line[0] == "R":
+            dir = (1, 0)
+        elif line[0] == "U":
+            dir = (0, -1)
+        elif line[0] == "D":
+            dir = (0, 1)
+        for _ in range(0, int(line[1])):
+            head[0] += dir[0]
+            head[1] += dir[1]
+            if head[0] == tail[0]:
+                if head[1] == tail[1] + 2:
+                    tail[1] += 1
+                elif head[1] == tail[1] - 2:
+                    tail[1] -= 1
+            elif head[1] == tail[1]:
+                if head[0] == tail[0] + 2:
+                    tail[0] += 1
+                elif head[0] == tail[0] - 2:
+                    tail[0] -= 1
+            elif abs(head[0] - tail[0]) > 1 or abs(head[1] - tail[1]) > 1:
+                if head[0] > tail[0]:
+                    tail[0] += 1
+                elif head[0] < tail[0]:
+                    tail[0] -= 1
+                if head[1] > tail[1]:
+                    tail[1] += 1
+                elif head[1] < tail[1]:
+                    tail[1] -= 1
+            result.add(tuple(tail))
+
+    print(len(result))
+
+
+def day9_part2():
+    lines = [line[:-1] for line in open("day9.txt").readlines()]
+
+    result = set()
+    knots = [[0, 0] for _ in range(0, 10)]
+    result.add(tuple(knots[-1]))
+
+    for line in lines:
+        line = line.split(" ")
+        dir = (0, 0)
+        if line[0] == "L":
+            dir = (-1, 0)
+        elif line[0] == "R":
+            dir = (1, 0)
+        elif line[0] == "U":
+            dir = (0, -1)
+        elif line[0] == "D":
+            dir = (0, 1)
+        for _ in range(0, int(line[1])):
+            knots[0][0] += dir[0]
+            knots[0][1] += dir[1]
+            for i in range(0, 9):
+                if knots[i][0] == knots[i + 1][0]:
+                    if knots[i][1] == knots[i + 1][1] + 2:
+                        knots[i + 1][1] += 1
+                    elif knots[i][1] == knots[i + 1][1] - 2:
+                        knots[i + 1][1] -= 1
+                elif knots[i][1] == knots[i + 1][1]:
+                    if knots[i][0] == knots[i + 1][0] + 2:
+                        knots[i + 1][0] += 1
+                    elif knots[i][0] == knots[i + 1][0] - 2:
+                        knots[i + 1][0] -= 1
+                elif abs(knots[i][0] - knots[i + 1][0]) > 1 or abs(knots[i][1] - knots[i + 1][1]) > 1:
+                    if knots[i][0] > knots[i + 1][0]:
+                        knots[i + 1][0] += 1
+                    elif knots[i][0] < knots[i + 1][0]:
+                        knots[i + 1][0] -= 1
+                    if knots[i][1] > knots[i + 1][1]:
+                        knots[i + 1][1] += 1
+                    elif knots[i][1] < knots[i + 1][1]:
+                        knots[i + 1][1] -= 1
+            result.add(tuple(knots[-1]))
+
+    print(len(result))
+
+
+def day10_part1():
+    lines = [line[:-1] for line in open("day10.txt").readlines()]
+
+    x = 1
+    signal = []
+    for instr in lines:
+        signal.append(x)
+        if instr == "noop":
+            continue
+        else:
+            signal.append(x)
+            x += int(instr.split(" ")[1])
+    signal.append(x)
+
+    print(20 * signal[19] + 60 * signal[59] + 100 * signal[99] + 140 * signal[139] + 180 * signal[179] + 220 * signal[219])
+
+
+def day10_part2():
+    lines = [line[:-1] for line in open("day10.txt").readlines()]
+
+    x = 1
+    signal = []
+    for instr in lines:
+        signal.append(x)
+        if instr == "noop":
+            continue
+        else:
+            signal.append(x)
+            x += int(instr.split(" ")[1])
+    signal.append(x)
+
+    for i in range(0, len(signal)):
+        if abs((i % 40) - signal[i]) < 2:
+            print("#", end="")
+        else:
+            print(".", end="")
+        if (i + 1) % 40 == 0:
+            print()
+
+
 if __name__ == '__main__':
-    day8_part2()
+    day10_part2()
