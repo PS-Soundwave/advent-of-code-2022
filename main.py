@@ -1,3 +1,5 @@
+from typing import *
+
 def day1_part1():
     lines = [line[:-1] for line in open("day1.txt").readlines()]
 
@@ -552,5 +554,114 @@ def day10_part2():
             print()
 
 
+def day11_part1():
+    lines = [line[:-1] for line in open("day11.txt").readlines()]
+
+    monkeys = []
+    for i, line in enumerate(lines):
+        if line.startswith("Monkey"):
+            monkey: dict[Union[str, bool], Union[str, int, list[Union[str, int]]]] = {"items": [int(item) for item in lines[i + 1].split(":")[1].split(",")]}
+            exp = lines[i + 2].split("=")[1]
+            if "+" in exp:
+                monkey["op"] = "+"
+            elif "*" in exp:
+                monkey["op"] = "*"
+            exp = exp.split(monkey["op"])
+            monkey["arg"]: List[Union[str, int]] = []
+            if "old" in exp[0]:
+                monkey["arg"].append("old")
+            else:
+                monkey["arg"].append(int(exp[0]))
+            if "old" in exp[1]:
+                monkey["arg"].append("old")
+            else:
+                monkey["arg"].append(int(exp[1]))
+            monkey["test"] = int(lines[i + 3].split(" ")[-1])
+            lines = lines
+            monkey[True] = int(lines[i + 4].split(" ")[-1])
+            monkey[False] = int(lines[i + 5].split(" ")[-1])
+            monkey["inspect"] = 0
+            monkeys.append(monkey)
+
+    for _ in range(0, 20):
+        for monkey in monkeys:
+            while len(monkey["items"]) > 0:
+                item = monkey["items"][0]
+                monkey["items"] = monkey["items"][1:]
+                monkey["inspect"] += 1
+                arg0 = monkey["arg"][0]
+                arg1 = monkey["arg"][1]
+                if arg0 == "old":
+                    arg0 = item
+                if arg1 == "old":
+                    arg1 = item
+                if monkey["op"] == "+":
+                    item = arg0 + arg1
+                elif monkey["op"] == "*":
+                    item = arg0 * arg1
+                item //= 3
+                monkeys[monkey[item % monkey["test"] == 0]]["items"].append(item)
+
+    business = sorted([monkey["inspect"] for monkey in monkeys], reverse=True)
+
+    print(business[0] * business[1])
+
+
+def day11_part2():
+    lines = [line[:-1] for line in open("day11.txt").readlines()]
+
+    monkeys = []
+    for i, line in enumerate(lines):
+        if line.startswith("Monkey"):
+            monkey: dict[Union[str, bool], Union[str, int, list[Union[str, int]]]] = {"items": [int(item) for item in lines[i + 1].split(":")[1].split(",")]}
+            exp = lines[i + 2].split("=")[1]
+            if "+" in exp:
+                monkey["op"] = "+"
+            elif "*" in exp:
+                monkey["op"] = "*"
+            exp = exp.split(monkey["op"])
+            monkey["arg"]: List[Union[str, int]] = []
+            if "old" in exp[0]:
+                monkey["arg"].append("old")
+            else:
+                monkey["arg"].append(int(exp[0]))
+            if "old" in exp[1]:
+                monkey["arg"].append("old")
+            else:
+                monkey["arg"].append(int(exp[1]))
+            monkey["test"] = int(lines[i + 3].split(" ")[-1])
+            lines = lines
+            monkey[True] = int(lines[i + 4].split(" ")[-1])
+            monkey[False] = int(lines[i + 5].split(" ")[-1])
+            monkey["inspect"] = 0
+            monkeys.append(monkey)
+
+    modulus = 1
+    for monkey in monkeys:
+        modulus *= monkey["test"]
+
+    for _ in range(0, 10000):
+        for monkey in monkeys:
+            while len(monkey["items"]) > 0:
+                item = monkey["items"][0]
+                monkey["items"] = monkey["items"][1:]
+                monkey["inspect"] += 1
+                arg0 = monkey["arg"][0]
+                arg1 = monkey["arg"][1]
+                if arg0 == "old":
+                    arg0 = item
+                if arg1 == "old":
+                    arg1 = item
+                if monkey["op"] == "+":
+                    item = (arg0 + arg1) % modulus
+                elif monkey["op"] == "*":
+                    item = (arg0 * arg1) % modulus
+                monkeys[monkey[item % monkey["test"] == 0]]["items"].append(item)
+
+    business = sorted([monkey["inspect"] for monkey in monkeys], reverse=True)
+
+    print(business[0] * business[1])
+
+
 if __name__ == '__main__':
-    day10_part2()
+    day11_part2()
